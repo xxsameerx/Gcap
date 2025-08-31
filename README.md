@@ -27,13 +27,12 @@ http://localhost:3000
 
 ## ✨ Key Features
 
-🤖 **AI Sentiment Analysis** - 95%+ accuracy across 22+ Indian languages
+🤖 **AI Sentiment Analysis** - 95%+ accuracy
 🎨 **Tricolor Theme** - Saffron, White, Green government design
 🌙 **Dark/Light Mode** - Complete theme toggle
 🌍 **Bilingual Support** - English ↔ Hindi translation
 📊 **Real-time Dashboard** - Government impact metrics
 📱 **Fully Responsive** - Works on all devices
-🔒 **Government Ready** - ISO 27001 compliant
 
 ---
 
