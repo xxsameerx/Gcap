@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Gcap/static/css/main.eaa70c18.css",
+    "main.js": "/Gcap/static/js/main.f2472bcc.js",
+    "index.html": "/Gcap/index.html",
+    "main.eaa70c18.css.map": "/Gcap/static/css/main.eaa70c18.css.map",
+    "main.f2472bcc.js.map": "/Gcap/static/js/main.f2472bcc.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.eaa70c18.css",
+    "static/js/main.f2472bcc.js"
+  ]
+}
