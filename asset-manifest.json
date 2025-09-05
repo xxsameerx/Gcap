@@ -1,13 +1,21 @@
 {
   "files": {
-    "main.css": "/Gcap/static/css/main.eaa70c18.css",
-    "main.js": "/Gcap/static/js/main.f2472bcc.js",
+    "main.css": "/Gcap/static/css/main.7d9de56b.css",
+    "main.js": "/Gcap/static/js/main.9e0101f8.js",
+    "static/js/239.577caf28.chunk.js": "/Gcap/static/js/239.577caf28.chunk.js",
+    "static/js/389.5a4506f5.chunk.js": "/Gcap/static/js/389.5a4506f5.chunk.js",
+    "static/js/977.b010a726.chunk.js": "/Gcap/static/js/977.b010a726.chunk.js",
+    "static/js/455.518c322b.chunk.js": "/Gcap/static/js/455.518c322b.chunk.js",
     "index.html": "/Gcap/index.html",
-    "main.eaa70c18.css.map": "/Gcap/static/css/main.eaa70c18.css.map",
-    "main.f2472bcc.js.map": "/Gcap/static/js/main.f2472bcc.js.map"
+    "main.7d9de56b.css.map": "/Gcap/static/css/main.7d9de56b.css.map",
+    "main.9e0101f8.js.map": "/Gcap/static/js/main.9e0101f8.js.map",
+    "239.577caf28.chunk.js.map": "/Gcap/static/js/239.577caf28.chunk.js.map",
+    "389.5a4506f5.chunk.js.map": "/Gcap/static/js/389.5a4506f5.chunk.js.map",
+    "977.b010a726.chunk.js.map": "/Gcap/static/js/977.b010a726.chunk.js.map",
+    "455.518c322b.chunk.js.map": "/Gcap/static/js/455.518c322b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.eaa70c18.css",
-    "static/js/main.f2472bcc.js"
+    "static/css/main.7d9de56b.css",
+    "static/js/main.9e0101f8.js"
   ]
 }
