@@ -33,6 +33,26 @@ const translations = {
     tryAI: 'Try AI Assistant',
     signIn: 'Sign In',
     
+        // Add these missing keys for GovernmentImpact component
+    coreCapabilities: 'Core Capabilities',
+    fourPillarsGovernance: 'Four pillars of modern governance analytics',
+    governmentImpactMetrics: 'Government Impact Metrics',
+    realTimePerformanceDashboard: 'Real-time Performance Dashboard',
+    
+    // Metric descriptions
+    allMajorDepartments: 'All major departments',
+    increaseThisMonth: '+25% this month',
+    lastFiscalYear: 'Last fiscal year',
+    improvingQuality: 'Improving quality',
+    allUnionTerritories: 'All Union Territories',
+    constitutionalLanguages: 'Constitutional languages',
+    
+    // Feature descriptions
+    dataDrivenPoliciesDesc: 'Evidence-based policy making through comprehensive citizen feedback analysis and ML-powered insights',
+    enhancedTransparencyDesc: 'Open government initiatives with full audit trails and public participation records for accountability',
+    advancedAnalyticsDesc: 'ML-powered sentiment analysis, topic clustering, and predictive policy impact modeling for better outcomes',
+    citizenEngagementDesc: 'Structured feedback collection with demographic analysis and regional insights for inclusive governance',
+
     // Features
     dataDrivenPolicies: 'Data-Driven Policies',
     enhancedTransparency: 'Enhanced Transparency',
@@ -190,7 +210,25 @@ const translations = {
     reports: 'रिपोर्ट्स | Reports',
     logout: 'लॉगआउट | Logout',
     welcome: 'नमस्ते',
+     // Add these missing keys in Hindi
+    coreCapabilities: 'मुख्य क्षमताएं',
+    fourPillarsGovernance: 'आधुनिक शासन विश्लेषण के चार स्तंभ',
+    governmentImpactMetrics: 'सरकारी प्रभाव मेट्रिक्स',
+    realTimePerformanceDashboard: 'रियल-टाइम प्रदर्शन डैशबोर्ड',
     
+    // Metric descriptions in Hindi
+    allMajorDepartments: 'सभी प्रमुख विभाग',
+    increaseThisMonth: 'इस महीने +25%',
+    lastFiscalYear: 'पिछला वित्तीय वर्ष',
+    improvingQuality: 'गुणवत्ता में सुधार',
+    allUnionTerritories: 'सभी केंद्र शासित प्रदेश',
+    constitutionalLanguages: 'संवैधानिक भाषाएं',
+    
+    // Feature descriptions in Hindi
+    dataDrivenPoliciesDesc: 'व्यापक नागरिक प्रतिक्रिया विश्लेषण और ML-संचालित अंतर्दृष्टि के माध्यम से साक्ष्य-आधारित नीति निर्माण',
+    enhancedTransparencyDesc: 'जवाबदेही के लिए पूर्ण ऑडिट ट्रेल्स और सार्वजनिक भागीदारी रिकॉर्ड के साथ खुली सरकारी पहल',
+    advancedAnalyticsDesc: 'बेहतर परिणामों के लिए ML-संचालित भावना विश्लेषण, विषय क्लस्टरिंग, और भविष्यवाणी नीति प्रभाव मॉडलिंग',
+    citizenEngagementDesc: 'समावेशी शासन के लिए जनसांख्यिकीय विश्लेषण और क्षेत्रीय अंतर्दृष्टि के साथ संरचित प्रतिक्रिया संग्रह',
     // Hero Section
     tagline: 'आपकी आवाज़, सरकार की पसंद',
     heroTitle: 'सरकारी निर्णय लेने में रूपांतरण',

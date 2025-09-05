@@ -5,8 +5,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useLanguage } from '../../context/LanguageContext';
 import { APP_CONFIG } from '../../utils/constants';
 
-// 👇 Import your toggle component
-import ToggleControls from './ToggleControls'; // Use the simple version we created
+// Import your toggle component
+import ToggleControls from './ToggleControls';
 
 import { 
   FaRobot, 
@@ -18,7 +18,8 @@ import {
   FaCog,
   FaSignOutAlt,
   FaBars,
-  FaBalanceScale
+  FaBalanceScale,
+  FaTimes
 } from 'react-icons/fa';
 
 const Navbar = () => {
@@ -66,9 +67,17 @@ const Navbar = () => {
               <div className="brand-tagline">{t('tagline')}</div>
             </div>
           </BSNavbar.Brand>
+
+          {/* Mobile Controls (Right side before toggle) */}
+          <div className="d-lg-none d-flex align-items-center">
+            <ToggleControls className="me-2" />
+            <BSNavbar.Toggle aria-controls="basic-navbar-nav" className="mobile-menu-btn">
+              <FaBars />
+            </BSNavbar.Toggle>
+          </div>
           
-          {/* Desktop Navigation */}
-          <BSNavbar.Collapse id="basic-navbar-nav" className="d-none d-lg-flex">
+          {/* Navigation - This will collapse on mobile */}
+          <BSNavbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               {navigationItems.map((item) => {
                 if (item.protected && !isAuthenticated) return null;
@@ -89,8 +98,10 @@ const Navbar = () => {
               })}
             </Nav>
 
-            {/* ✅ Toggle Controls - DESKTOP VERSION */}
-            <ToggleControls className="me-3" />
+            {/* Desktop Toggle Controls */}
+            <div className="d-none d-lg-flex">
+              <ToggleControls className="me-3" />
+            </div>
             
             {/* Auth Section */}
             <Nav className="auth-section">
@@ -143,32 +154,8 @@ const Navbar = () => {
               )}
             </Nav>
           </BSNavbar.Collapse>
-
-          {/* Mobile Menu Toggle */}
-          <div className="d-lg-none d-flex align-items-center">
-            {/* ✅ Toggle Controls - MOBILE VERSION */}
-            <ToggleControls className="me-2" />
-            
-            <Button
-              variant="outline-light"
-              className="mobile-menu-btn"
-              onClick={() => setShowOffcanvas(true)}
-            >
-              <FaBars />
-            </Button>
-          </div>
         </Container>
       </BSNavbar>
-
-      {/* Mobile Offcanvas Menu */}
-      <Offcanvas 
-        show={showOffcanvas} 
-        onHide={() => setShowOffcanvas(false)} 
-        placement="end"
-        className="mobile-offcanvas-government"
-      >
-        {/* ... rest of your offcanvas code ... */}
-      </Offcanvas>
     </>
   );
 };

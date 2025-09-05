@@ -13,7 +13,7 @@ const GovernmentImpact = () => {
       icon: <FaBuilding />,
       number: GOVERNMENT_STATS.MINISTRIES_CONNECTED,
       label: t('ministriesConnected'),
-      description: 'All major departments',
+      description: t('allMajorDepartments'), // ✅ Added translation
       color: 'saffron',
       position: 'top-left'
     },
@@ -21,7 +21,7 @@ const GovernmentImpact = () => {
       icon: <FaUsers />,
       number: GOVERNMENT_STATS.CITIZEN_RESPONSES,
       label: t('citizenResponses'),
-      description: '+25% this month',
+      description: t('increaseThisMonth'), // ✅ Added translation
       color: 'green',
       position: 'top-right'
     },
@@ -29,7 +29,7 @@ const GovernmentImpact = () => {
       icon: <FaFileAlt />,
       number: GOVERNMENT_STATS.POLICIES_ANALYZED,
       label: t('policiesAnalyzed'),
-      description: 'Last fiscal year',
+      description: t('lastFiscalYear'), // ✅ Added translation
       color: 'navy',
       position: 'bottom-left'
     },
@@ -37,7 +37,7 @@ const GovernmentImpact = () => {
       icon: <FaBullseye />,
       number: GOVERNMENT_STATS.DECISION_ACCURACY,
       label: t('decisionAccuracy'),
-      description: 'Improving quality',
+      description: t('improvingQuality'), // ✅ Added translation
       color: 'saffron',
       position: 'bottom-right'
     },
@@ -45,7 +45,7 @@ const GovernmentImpact = () => {
       icon: <FaMapMarkedAlt />,
       number: GOVERNMENT_STATS.STATES_COVERED,
       label: t('statesCovered'),
-      description: 'All Union Territories',
+      description: t('allUnionTerritories'), // ✅ Added translation
       color: 'green',
       position: 'center'
     },
@@ -53,7 +53,7 @@ const GovernmentImpact = () => {
       icon: <FaLanguage />,
       number: GOVERNMENT_STATS.LANGUAGES_SUPPORTED,
       label: t('languagesSupported'),
-      description: 'Constitutional languages',
+      description: t('constitutionalLanguages'), // ✅ Added translation
       color: 'navy',
       position: 'center-right'
     }
@@ -62,28 +62,28 @@ const GovernmentImpact = () => {
   const quadrantFeatures = [
     {
       title: t('dataDrivenPolicies'),
-      description: 'Evidence-based policy making through comprehensive citizen feedback analysis and ML-powered insights',
+      description: t('dataDrivenPoliciesDesc'), // ✅ Added translation
       icon: <FaFileAlt />,
       position: 'top-left',
       color: 'saffron'
     },
     {
       title: t('enhancedTransparency'),
-      description: 'Open government initiatives with full audit trails and public participation records for accountability',
+      description: t('enhancedTransparencyDesc'), // ✅ Added translation
       icon: <FaUsers />,
       position: 'top-right',
       color: 'green'
     },
     {
       title: t('advancedAnalytics'),
-      description: 'ML-powered sentiment analysis, topic clustering, and predictive policy impact modeling for better outcomes',
+      description: t('advancedAnalyticsDesc'), // ✅ Added translation
       icon: <FaBullseye />,
       position: 'bottom-left',
       color: 'navy'
     },
     {
       title: t('citizenEngagement'),
-      description: 'Structured feedback collection with demographic analysis and regional insights for inclusive governance',
+      description: t('citizenEngagementDesc'), // ✅ Added translation
       icon: <FaBuilding />,
       position: 'bottom-right',
       color: 'saffron'
@@ -102,12 +102,12 @@ const GovernmentImpact = () => {
         </Row>
 
         <Row className="g-0">
-          {/* Left Side - Quadrant Features (Keep Same) */}
+          {/* Left Side - Quadrant Features */}
           <Col lg={6} className="pe-lg-3">
             <div className="features-quadrant-container-enhanced">
               <div className="quadrant-header mb-4">
-                <h3 className="quadrant-section-title">Core Capabilities</h3>
-                <p className="quadrant-section-subtitle">Four pillars of modern governance analytics</p>
+                <h3 className="quadrant-section-title">{t('coreCapabilities')}</h3> {/* ✅ Fixed */}
+                <p className="quadrant-section-subtitle">{t('fourPillarsGovernance')}</p> {/* ✅ Fixed */}
               </div>
               
               {/* Axis Lines */}
@@ -130,37 +130,34 @@ const GovernmentImpact = () => {
               </div>
             </div>
           </Col>
-{/* Right Side - Modern Grid */}
-<Col lg={6} className="ps-lg-3">
-  <div className="modern-grid-container">
-    <div className="grid-header text-center mb-4">
-      <h3 className="grid-title">Government Impact Metrics</h3>
-      <p className="grid-subtitle">Real-time Performance Dashboard</p>
-    </div>
-    
-    <div className="metrics-modern-grid">
-      {impactMetrics.slice(0, 6).map((metric, index) => (
-        <div key={index} className={`modern-metric-card card-${metric.color}`}>
-          <div className="modern-card-header">
-            <div className={`modern-icon bg-${metric.color}`}>
-              {metric.icon}
+
+          {/* Right Side - Modern Grid */}
+          <Col lg={6} className="ps-lg-3">
+            <div className="modern-grid-container">
+              <div className="grid-header text-center mb-4">
+                <h3 className="grid-title">{t('governmentImpactMetrics')}</h3> {/* ✅ Fixed */}
+                <p className="grid-subtitle">{t('realTimePerformanceDashboard')}</p> {/* ✅ Fixed */}
+              </div>
+              
+              <div className="metrics-modern-grid">
+                {impactMetrics.slice(0, 6).map((metric, index) => (
+                  <div key={index} className={`modern-metric-card card-${metric.color}`}>
+                    <div className="modern-card-header">
+                      <div className={`modern-icon bg-${metric.color}`}>
+                        {metric.icon}
+                      </div>
+                    </div>
+                    <div className="modern-card-body">
+                      <div className="modern-number">{metric.number}</div>
+                      <div className="modern-label">{metric.label}</div>
+                      <div className="modern-description">{metric.description}</div>
+                    </div>
+                    <div className="modern-card-accent"></div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="modern-card-body">
-            <div className="modern-number">{metric.number}</div>
-            <div className="modern-label">{metric.label}</div>
-            <div className="modern-description">{metric.description}</div>
-          </div>
-          <div className="modern-card-accent"></div>
-        </div>
-      ))}
-    </div>
-  </div>
-</Col>
-
-
-
-
+          </Col>
         </Row>
       </Container>
     </section>
