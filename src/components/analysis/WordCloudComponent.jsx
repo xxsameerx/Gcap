@@ -144,26 +144,36 @@ const WordCloudComponent = ({
     return Math.round(size);
   }, []);
 
-  const getSentimentColor = useCallback((sentiment, intensity = 1) => {
-    const colors = {
-      positive: {
-        bg: `hsla(142, 71%, ${45 + intensity * 15}%, ${0.8 + intensity * 0.2})`,
-        border: `hsla(142, 71%, ${35 + intensity * 10}%, ${0.9 + intensity * 0.1})`,
-        text: isDarkMode ? '#10b981' : '#059669'
-      },
-      negative: {
-        bg: `hsla(0, 84%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
-        border: `hsla(0, 84%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
-        text: isDarkMode ? '#f87171' : '#dc2626'
-      },
-      neutral: {
-        bg: `hsla(45, 93%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
-        border: `hsla(45, 93%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
-        text: isDarkMode ? '#fbbf24' : '#d97706'
-      }
-    };
-    return colors[sentiment] || colors.neutral;
-  }, [isDarkMode]);
+const getSentimentColor = useCallback((sentiment, intensity = 1) => {
+  const colors = {
+    positive: {
+      bg: `hsla(142, 71%, ${45 + intensity * 15}%, ${0.8 + intensity * 0.2})`,
+      border: `hsla(142, 71%, ${35 + intensity * 10}%, ${0.9 + intensity * 0.1})`,
+      text: isDarkMode ? '#10b981' : '#059669'
+    },
+    negative: {
+      // Fixed: Brighter red colors for dark mode visibility
+      bg: isDarkMode 
+        ? `hsla(0, 85%, ${65 + intensity * 15}%, ${0.9 + intensity * 0.1})` 
+        : `hsla(0, 84%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
+      border: isDarkMode 
+        ? `hsla(0, 85%, ${55 + intensity * 10}%, ${0.95 + intensity * 0.05})` 
+        : `hsla(0, 84%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
+      text: isDarkMode ? '#ff6b6b' : '#dc2626'  // Brighter red for dark mode
+    },
+    neutral: {
+      bg: isDarkMode 
+        ? `hsla(45, 93%, ${65 + intensity * 10}%, ${0.9 + intensity * 0.1})`
+        : `hsla(45, 93%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
+      border: isDarkMode 
+        ? `hsla(45, 93%, ${55 + intensity * 5}%, ${0.95 + intensity * 0.05})`
+        : `hsla(45, 93%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
+      text: isDarkMode ? '#fbbf24' : '#d97706'
+    }
+  };
+  return colors[sentiment] || colors.neutral;
+}, [isDarkMode]);
+
 
   const getWordColors = useCallback((word, maxValue) => {
     if (isHeatmapMode) {

@@ -3507,3 +3507,422 @@ body {
 [data-theme="dark"] .modern-card-accent {
   background: linear-gradient(90deg, #B8860B, #68D391);
 }
+
+/* Modern Analysis Page Styles */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Card Hover Effects */
+.analysis-page .card {
+  transition: all 0.3s ease;
+}
+
+.analysis-page .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+/* Button Styling */
+.analysis-page .btn {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.analysis-page .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Progress Bar Styling */
+.analysis-page .progress {
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.analysis-page .progress-bar {
+  border-radius: 10px;
+}
+
+/* Badge Styling */
+.analysis-page .badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 2rem !important;
+  }
+  
+  .lead {
+    font-size: 1rem !important;
+  }
+  
+  .analysis-page .btn {
+    font-size: 0.875rem;
+  }
+}
+/* ==============================================
+   ANALYSIS PAGE - COMPLETE DARK THEME FIX
+   ============================================== */
+
+/* Light Theme Base */
+.analysis-page {
+  background-color: #f8f9fa;
+  color: #212529;
+  min-height: 100vh;
+  transition: all 0.3s ease;
+}
+
+/* Dark Theme Override - Using [data-theme="dark"] selector to match your theme system */
+[data-theme="dark"] .analysis-page,
+[data-theme="dark"] .min-vh-100 {
+  background-color: #121212 !important;
+  color: #ffffff !important;
+}
+
+/* Hero Section Dark Theme */
+[data-theme="dark"] .bg-gradient-primary {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+}
+
+[data-theme="dark"] .bg-gradient-dark {
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+}
+
+/* Cards Dark Theme */
+[data-theme="dark"] .card {
+  background-color: #1e1e1e !important;
+  border-color: #333 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .card-body {
+  background-color: #1e1e1e !important;
+  color: #ffffff !important;
+}
+
+/* Background Colors Dark Theme */
+[data-theme="dark"] .bg-light {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .bg-white {
+  background-color: #2d2d2d !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .bg-dark {
+  background-color: #0f0f0f !important;
+}
+
+[data-theme="dark"] .bg-secondary {
+  background-color: #3d3d3d !important;
+}
+
+/* Text Colors Dark Theme */
+[data-theme="dark"] .text-muted {
+  color: #aaa !important;
+}
+
+[data-theme="dark"] .text-light {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6,
+[data-theme="dark"] p,
+[data-theme="dark"] span,
+[data-theme="dark"] div {
+  color: inherit;
+}
+
+/* Tab Navigation Dark Theme */
+[data-theme="dark"] .nav-tabs {
+  border-bottom-color: #444 !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link {
+  background-color: #2d2d2d !important;
+  border-color: #444 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link:hover {
+  background-color: #3d3d3d !important;
+  border-color: #666 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .nav-tabs .nav-link.active {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  color: #ffffff !important;
+}
+
+/* Buttons Dark Theme */
+[data-theme="dark"] .btn-outline-light {
+  border-color: #666 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-outline-light:hover {
+  background-color: #666 !important;
+  border-color: #666 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .btn-outline-primary {
+  border-color: #007bff !important;
+  color: #007bff !important;
+}
+
+[data-theme="dark"] .btn-outline-primary:hover {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  color: #ffffff !important;
+}
+
+/* Alerts Dark Theme */
+[data-theme="dark"] .alert {
+  background-color: #2d2d2d !important;
+  border-color: #444 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .alert-info {
+  background-color: #1e3a5f !important;
+  border-color: #2980b9 !important;
+  color: #ffffff !important;
+}
+
+/* Progress Bar Dark Theme */
+[data-theme="dark"] .progress {
+  background-color: #2d2d2d !important;
+}
+
+[data-theme="dark"] .progress-bar {
+  background-color: #007bff !important;
+}
+
+/* Spinner Dark Theme */
+[data-theme="dark"] .spinner-border {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  border-left-color: #007bff !important;
+}
+
+/* Badges Dark Theme */
+[data-theme="dark"] .badge {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .badge.bg-success {
+  background-color: #28a745 !important;
+}
+
+[data-theme="dark"] .badge.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+[data-theme="dark"] .badge.bg-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+}
+
+[data-theme="dark"] .badge.bg-info {
+  background-color: #17a2b8 !important;
+}
+
+/* Borders Dark Theme */
+[data-theme="dark"] .border {
+  border-color: #444 !important;
+}
+
+[data-theme="dark"] .rounded {
+  border-color: #444 !important;
+}
+
+/* Form Elements Dark Theme */
+[data-theme="dark"] .form-control {
+  background-color: #2d2d2d !important;
+  border-color: #444 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .form-control:focus {
+  background-color: #2d2d2d !important;
+  border-color: #007bff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+/* Table Dark Theme */
+[data-theme="dark"] .table {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+  border-color: #444 !important;
+}
+
+[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > td {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Dropdown Dark Theme */
+[data-theme="dark"] .dropdown-menu {
+  background-color: #2d2d2d !important;
+  border-color: #444 !important;
+}
+
+[data-theme="dark"] .dropdown-item {
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: #3d3d3d !important;
+  color: #ffffff !important;
+}
+
+/* Container Dark Theme */
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid {
+  color: #ffffff !important;
+}
+
+/* Modern Analysis Page Styles - Keep existing */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Card Hover Effects */
+.analysis-page .card {
+  transition: all 0.3s ease;
+}
+
+.analysis-page .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+/* Button Styling */
+.analysis-page .btn {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.analysis-page .btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Progress Bar Styling */
+.analysis-page .progress {
+  border-radius: 10px;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.analysis-page .progress-bar {
+  border-radius: 10px;
+}
+
+/* Badge Styling */
+.analysis-page .badge {
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .display-5 {
+    font-size: 2rem !important;
+  }
+  
+  .lead {
+    font-size: 1rem !important;
+  }
+  
+  .analysis-page .btn {
+    font-size: 0.875rem;
+  }
+}
+
+/* Dark Theme Hover Effects */
+[data-theme="dark"] .analysis-page .card:hover {
+  box-shadow: 0 10px 25px rgba(255,255,255,0.1) !important;
+}
+
+/* dark theme for WordCloudComponent negative  */
+/* Dark Theme Word Cloud Fixes */
+[data-theme="dark"] .word-cloud-dashboard .badge.bg-danger {
+  background-color: #ff6b6b !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .text-danger {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .bg-danger {
+  background-color: #dc2626 !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .bg-danger.bg-opacity-10 {
+  background-color: rgba(255, 107, 107, 0.15) !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .bg-danger.bg-opacity-20 {
+  background-color: rgba(255, 107, 107, 0.25) !important;
+}
+
+/* Better contrast for all sentiment colors in dark mode */
+[data-theme="dark"] .word-cloud-dashboard .text-success {
+  color: #34d399 !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .text-warning {
+  color: #fbbf24 !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .text-primary {
+  color: #60a5fa !important;
+}
+
+/* Card headers in dark mode */
+[data-theme="dark"] .word-cloud-dashboard .card-header.bg-danger {
+  background-color: #dc2626 !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .card-header.bg-success {
+  background-color: #059669 !important;
+}
+
+[data-theme="dark"] .word-cloud-dashboard .card-header.bg-primary {
+  background-color: #2563eb !important;
+}
