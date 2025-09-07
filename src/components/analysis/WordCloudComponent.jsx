@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Card, Row, Col, Badge, Button, Form, InputGroup, Dropdown, Modal, Alert } from 'react-bootstrap';
+import { Card, Row, Col, Badge, Button, Form, InputGroup, Dropdown, Modal, Alert, ButtonGroup } from 'react-bootstrap';
 import { 
   FaCloud, 
   FaHashtag, 
@@ -9,9 +9,6 @@ import {
   FaDownload,
   FaInfoCircle,
   FaEye,
-  FaThumbsUp,
-  FaThumbsDown,
-  FaMinus,
   FaPalette,
   FaMoon,
   FaSun,
@@ -27,7 +24,6 @@ const WordCloudComponent = ({
   showFilters = true,
   downloadable = true 
 }) => {
-  const [selectedSentiment, setSelectedSentiment] = useState('all');
   const [minWordCount, setMinWordCount] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
   const [isHeatmapMode, setIsHeatmapMode] = useState(false);
@@ -36,48 +32,54 @@ const WordCloudComponent = ({
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [exportModalShow, setExportModalShow] = useState(false);
 
-  // Custom color themes
+  // Custom color themes with improved colors
   const themes = {
     default: {
       name: 'Government Blue',
-      primary: '#667eea',
-      secondary: '#764ba2',
-      accent: '#f093fb'
+      colors: ['#667eea', '#764ba2', '#f093fb', '#4facfe', '#00f2fe'],
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      textColor: isDarkMode ? '#ffffff' : '#1f2937'
     },
     ocean: {
       name: 'Ocean Breeze',
-      primary: '#00c9ff',
-      secondary: '#92fe9d',
-      accent: '#667eea'
+      colors: ['#00c9ff', '#92fe9d', '#667eea', '#4facfe', '#00f2fe'],
+      gradient: 'linear-gradient(135deg, #00c9ff 0%, #92fe9d 100%)',
+      textColor: isDarkMode ? '#ffffff' : '#1f2937'
     },
     sunset: {
       name: 'Sunset Glow',
-      primary: '#fc466b',
-      secondary: '#3f5efb',
-      accent: '#f093fb'
+      colors: ['#fc466b', '#3f5efb', '#f093fb', '#ff6b6b', '#ffeaa7'],
+      gradient: 'linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)',
+      textColor: isDarkMode ? '#ffffff' : '#1f2937'
     },
     forest: {
       name: 'Forest Green',
-      primary: '#56ab2f',
-      secondary: '#a8edea',
-      accent: '#fed6e3'
+      colors: ['#56ab2f', '#a8edea', '#fed6e3', '#74b9ff', '#00cec9'],
+      gradient: 'linear-gradient(135deg, #56ab2f 0%, #a8edea 100%)',
+      textColor: isDarkMode ? '#ffffff' : '#1f2937'
     },
     cosmic: {
       name: 'Cosmic Purple',
-      primary: '#667eea',
-      secondary: '#764ba2',
-      accent: '#f093fb'
+      colors: ['#667eea', '#764ba2', '#f093fb', '#a29bfe', '#fd79a8'],
+      gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      textColor: isDarkMode ? '#ffffff' : '#1f2937'
     }
   };
 
+  // Theme toggle function
+  const toggleTheme = useCallback(() => {
+    const themeKeys = Object.keys(themes);
+    const currentIndex = themeKeys.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % themeKeys.length;
+    setCurrentTheme(themeKeys[nextIndex]);
+  }, [currentTheme, themes]);
+
+  // Simplified word cloud data processing (no sentiment filtering)
   const wordCloudData = useMemo(() => {
     if (!data || data.length === 0) return [];
 
-    const sentimentWords = data.reduce((acc, item) => {
+    const wordFrequency = data.reduce((acc, item) => {
       const text = (item.comment || item.feedback || item.text || '').toLowerCase();
-      const sentiment = item.sentiment || 'neutral';
-      
-      if (!acc[sentiment]) acc[sentiment] = {};
       
       const stopwords = new Set([
         'this', 'that', 'with', 'have', 'will', 'been', 'their', 'they', 'them', 
@@ -99,83 +101,36 @@ const WordCloudComponent = ({
         );
 
       words.forEach(word => {
-        acc[sentiment][word] = (acc[sentiment][word] || 0) + 1;
+        acc[word] = (acc[word] || 0) + 1;
       });
 
       return acc;
     }, {});
 
-    const allWords = {};
-    Object.entries(sentimentWords).forEach(([sentiment, wordMap]) => {
-      Object.entries(wordMap).forEach(([word, count]) => {
-        if (!allWords[word]) {
-          allWords[word] = { total: 0, positive: 0, negative: 0, neutral: 0 };
-        }
-        allWords[word].total += count;
-        allWords[word][sentiment] = count;
-      });
-    });
-
-    return Object.entries(allWords)
-      .filter(([word, data]) => {
-        if (data.total < minWordCount) return false;
+    return Object.entries(wordFrequency)
+      .filter(([word, count]) => {
+        if (count < minWordCount) return false;
         if (searchTerm && !word.includes(searchTerm.toLowerCase())) return false;
         return true;
       })
-      .sort(([,a], [,b]) => b.total - a.total)
+      .sort(([,a], [,b]) => b - a)
       .slice(0, 60)
-      .map(([text, data]) => ({
+      .map(([text, value]) => ({
         text,
-        value: data.total,
-        positive: data.positive || 0,
-        negative: data.negative || 0,
-        neutral: data.neutral || 0,
-        dominantSentiment: data.positive > data.negative && data.positive > data.neutral ? 'positive' :
-                          data.negative > data.positive && data.negative > data.neutral ? 'negative' : 'neutral',
-        sentimentScore: ((data.positive - data.negative) / data.total).toFixed(2)
-      }))
-      .filter(word => selectedSentiment === 'all' || word.dominantSentiment === selectedSentiment);
-  }, [data, selectedSentiment, minWordCount, searchTerm]);
+        value
+      }));
+  }, [data, minWordCount, searchTerm]);
 
   const getWordSize = useCallback((value, maxValue) => {
-    const minSize = 12;
+    const minSize = 16;
     const maxSize = 56;
     const size = minSize + ((value / maxValue) * (maxSize - minSize));
     return Math.round(size);
   }, []);
 
-const getSentimentColor = useCallback((sentiment, intensity = 1) => {
-  const colors = {
-    positive: {
-      bg: `hsla(142, 71%, ${45 + intensity * 15}%, ${0.8 + intensity * 0.2})`,
-      border: `hsla(142, 71%, ${35 + intensity * 10}%, ${0.9 + intensity * 0.1})`,
-      text: isDarkMode ? '#10b981' : '#059669'
-    },
-    negative: {
-      // Fixed: Brighter red colors for dark mode visibility
-      bg: isDarkMode 
-        ? `hsla(0, 85%, ${65 + intensity * 15}%, ${0.9 + intensity * 0.1})` 
-        : `hsla(0, 84%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
-      border: isDarkMode 
-        ? `hsla(0, 85%, ${55 + intensity * 10}%, ${0.95 + intensity * 0.05})` 
-        : `hsla(0, 84%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
-      text: isDarkMode ? '#ff6b6b' : '#dc2626'  // Brighter red for dark mode
-    },
-    neutral: {
-      bg: isDarkMode 
-        ? `hsla(45, 93%, ${65 + intensity * 10}%, ${0.9 + intensity * 0.1})`
-        : `hsla(45, 93%, ${55 + intensity * 10}%, ${0.8 + intensity * 0.2})`,
-      border: isDarkMode 
-        ? `hsla(45, 93%, ${55 + intensity * 5}%, ${0.95 + intensity * 0.05})`
-        : `hsla(45, 93%, ${45 + intensity * 5}%, ${0.9 + intensity * 0.1})`,
-      text: isDarkMode ? '#fbbf24' : '#d97706'
-    }
-  };
-  return colors[sentiment] || colors.neutral;
-}, [isDarkMode]);
-
-
-  const getWordColors = useCallback((word, maxValue) => {
+  const getWordColors = useCallback((word, index, maxValue) => {
+    const currentThemeColors = themes[currentTheme].colors;
+    
     if (isHeatmapMode) {
       const intensity = word.value / maxValue;
       const hue = 240 - (intensity * 180);
@@ -188,9 +143,17 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
         text: intensity > 0.6 ? '#ffffff' : isDarkMode ? '#f1f5f9' : '#1f2937'
       };
     } else {
-      return getSentimentColor(word.dominantSentiment, word.value / maxValue);
+      // Cycle through theme colors
+      const colorIndex = index % currentThemeColors.length;
+      const baseColor = currentThemeColors[colorIndex];
+      
+      return {
+        bg: `${baseColor}20`,
+        border: baseColor,
+        text: isDarkMode ? '#ffffff' : '#1f2937'
+      };
     }
-  }, [isHeatmapMode, getSentimentColor, isDarkMode]);
+  }, [isHeatmapMode, currentTheme, themes, isDarkMode]);
 
   const handleWordClick = useCallback((word) => {
     if (onWordClick) {
@@ -240,16 +203,11 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
         exportDate: new Date().toISOString(),
         totalWords: wordCloudData.length,
         theme: currentTheme,
-        mode: isHeatmapMode ? 'heatmap' : 'sentiment'
+        mode: isHeatmapMode ? 'heatmap' : 'theme'
       },
       words: wordCloudData.map(word => ({
         text: word.text,
-        frequency: word.value,
-        sentiment: word.dominantSentiment,
-        sentimentScore: word.sentimentScore,
-        positive: word.positive,
-        negative: word.negative,
-        neutral: word.neutral
+        frequency: word.value
       }))
     };
 
@@ -301,9 +259,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
       <Card className={`shadow-sm border-0 rounded-3 mb-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
         <Card.Header 
           className="text-white border-0 rounded-top-3" 
-          style={{
-            background: `linear-gradient(135deg, ${themes[currentTheme].primary} 0%, ${themes[currentTheme].secondary} 100%)`
-          }}
+          style={{ background: themes[currentTheme].gradient }}
         >
           <Row className="align-items-center">
             <Col>
@@ -312,37 +268,23 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                 {title}
               </h4>
               <small className="opacity-90">
-                AI-powered semantic analysis with interactive visualization
+                AI-powered keyword analysis with interactive theming
               </small>
             </Col>
             <Col xs="auto">
               <div className="d-flex gap-2 align-items-center flex-wrap">
-                <Dropdown>
-                  <Dropdown.Toggle variant="light" size="sm" className="px-3">
-                    <FaPalette className="me-1" />
-                    {themes[currentTheme].name}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {Object.entries(themes).map(([key, theme]) => (
-                      <Dropdown.Item 
-                        key={key}
-                        onClick={() => setCurrentTheme(key)}
-                        active={currentTheme === key}
-                      >
-                        <div 
-                          className="d-inline-block me-2 rounded-circle"
-                          style={{
-                            width: '12px',
-                            height: '12px',
-                            background: `linear-gradient(45deg, ${theme.primary}, ${theme.secondary})`
-                          }}
-                        />
-                        {theme.name}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                {/* Theme Toggle Button */}
+                <Button
+                  variant="light"
+                  size="sm"
+                  className="px-3"
+                  onClick={toggleTheme}
+                >
+                  <FaPalette className="me-1" />
+                  {themes[currentTheme].name}
+                </Button>
 
+                {/* Dark Mode Toggle */}
                 <Button
                   variant={isDarkMode ? "warning" : "outline-light"}
                   size="sm"
@@ -378,21 +320,6 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
             <Row className="g-3 align-items-end">
               <Col md={3}>
                 <Form.Group>
-                  <Form.Label className="fw-semibold small">Filter by Sentiment</Form.Label>
-                  <Form.Select 
-                    value={selectedSentiment}
-                    onChange={(e) => setSelectedSentiment(e.target.value)}
-                    className="form-select-sm"
-                  >
-                    <option value="all">All Sentiments</option>
-                    <option value="positive">Positive Only</option>
-                    <option value="negative">Negative Only</option>
-                    <option value="neutral">Neutral Only</option>
-                  </Form.Select>
-                </Form.Group>
-              </Col>
-              <Col md={3}>
-                <Form.Group>
                   <Form.Label className="fw-semibold small">Min Frequency</Form.Label>
                   <Form.Range
                     value={minWordCount}
@@ -404,7 +331,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                   <small className="text-muted">{minWordCount}+ occurrences</small>
                 </Form.Group>
               </Col>
-              <Col md={4}>
+              <Col md={6}>
                 <Form.Group>
                   <Form.Label className="fw-semibold small">Search Keywords</Form.Label>
                   <InputGroup>
@@ -421,7 +348,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                   </InputGroup>
                 </Form.Group>
               </Col>
-              <Col md={2}>
+              <Col md={3}>
                 <div className="d-flex gap-2">
                   <Button
                     variant={isHeatmapMode ? "primary" : "outline-primary"}
@@ -430,7 +357,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                     className="flex-fill"
                   >
                     <FaEye className="me-1" />
-                    Heatmap
+                    {isHeatmapMode ? 'Heatmap Mode' : 'Theme Mode'}
                   </Button>
                 </div>
               </Col>
@@ -447,7 +374,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                 ? `linear-gradient(135deg, #1f2937 0%, #374151 100%)`
                 : isHeatmapMode 
                   ? 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
-                  : `linear-gradient(135deg, ${themes[currentTheme].primary}15 0%, ${themes[currentTheme].secondary}10 50%, ${themes[currentTheme].accent}15 100%)`,
+                  : `linear-gradient(135deg, ${themes[currentTheme].colors[0]}10 0%, ${themes[currentTheme].colors[1]}10 50%, ${themes[currentTheme].colors[2]}10 100%)`,
               border: `2px solid ${isDarkMode ? '#4b5563' : '#e2e8f0'}`,
               boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.05)'
             }}
@@ -455,13 +382,13 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
             <div 
               className="position-absolute w-100 h-100 opacity-10"
               style={{
-                background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23${themes[currentTheme].primary.slice(1)}' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+                background: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23${themes[currentTheme].colors[0].slice(1)}' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
               }}
             />
             
             <div className="d-flex flex-wrap justify-content-center align-items-center p-4 position-relative">
               {wordCloudData.map((word, index) => {
-                const colors = getWordColors(word, maxValue);
+                const colors = getWordColors(word, index, maxValue);
                 const fontSize = getWordSize(word.value, maxValue);
                 const isHovered = hoveredWord === word.text;
                 
@@ -474,7 +401,7 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                       fontWeight: word.value > maxValue * 0.5 ? '900' : '700',
                       color: colors.text,
                       background: isHovered 
-                        ? `linear-gradient(135deg, ${colors.bg}, ${colors.border})`
+                        ? `linear-gradient(135deg, ${colors.bg}, ${colors.border}20)`
                         : colors.bg,
                       border: `2px solid ${colors.border}`,
                       borderRadius: '16px',
@@ -482,11 +409,9 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                       cursor: 'pointer',
                       transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                       transformOrigin: 'center',
-                      textShadow: isHeatmapMode && colors.text === '#ffffff' 
-                        ? '0 1px 2px rgba(0, 0, 0, 0.5)' 
-                        : isDarkMode 
-                          ? '0 1px 2px rgba(0, 0, 0, 0.8)'
-                          : '0 1px 2px rgba(0, 0, 0, 0.1)',
+                      textShadow: isDarkMode 
+                        ? '0 1px 2px rgba(0, 0, 0, 0.8)'
+                        : '0 1px 2px rgba(0, 0, 0, 0.1)',
                       backdropFilter: 'blur(10px)',
                       WebkitBackdropFilter: 'blur(10px)',
                       transform: isHovered 
@@ -494,17 +419,13 @@ const getSentimentColor = useCallback((sentiment, intensity = 1) => {
                         : 'scale(1) translateZ(0)',
                       zIndex: isHovered ? 100 : index,
                       boxShadow: isHovered
-                        ? '0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 4px rgba(255, 255, 255, 0.8)'
+                        ? `0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 4px ${colors.border}40`
                         : '0 2px 8px rgba(0, 0, 0, 0.1)',
                     }}
                     onClick={() => handleWordClick(word)}
                     onMouseEnter={() => setHoveredWord(word.text)}
                     onMouseLeave={() => setHoveredWord(null)}
-                    title={isHeatmapMode 
-                      ? `"${word.text}" - Frequency: ${word.value} (${((word.value/maxValue)*100).toFixed(1)}% of max)`
-                      : `"${word.text}" appears ${word.value} times
-Sentiment Score: ${word.sentimentScore}
-Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutral}`}
+                    title={`"${word.text}" - Frequency: ${word.value}`}
                   >
                     {word.text}
                     
@@ -522,9 +443,7 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
                           backdropFilter: 'blur(10px)'
                         }}
                       >
-                        {isHeatmapMode 
-                          ? `${word.value} freq • ${((word.value/maxValue)*100).toFixed(1)}%`
-                          : `${word.value} occurrences • ${word.dominantSentiment}`}
+                        {word.value} occurrences • {((word.value/maxValue)*100).toFixed(1)}%
                         <div 
                           className="position-absolute"
                           style={{
@@ -553,7 +472,6 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
                   variant="outline-primary" 
                   size="sm"
                   onClick={() => {
-                    setSelectedSentiment('all');
                     setMinWordCount(1);
                     setSearchTerm('');
                   }}
@@ -564,6 +482,7 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
             )}
           </div>
 
+          {/* Color Legend */}
           <div className={`d-flex justify-content-center align-items-center gap-4 my-4 p-3 rounded-3 ${isDarkMode ? 'bg-secondary' : 'bg-light'}`}>
             {isHeatmapMode ? (
               <>
@@ -595,147 +514,66 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
               </>
             ) : (
               <>
-                <div className="d-flex align-items-center">
-                  <div className="me-2 rounded-circle" style={{
-                    width: '16px', 
-                    height: '16px', 
-                    background: getSentimentColor('positive', 0.8).bg
-                  }}></div>
-                  <span className="fw-semibold text-success small">
-                    <FaThumbsUp className="me-1" />Positive
-                  </span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <div className="me-2 rounded-circle" style={{
-                    width: '16px', 
-                    height: '16px', 
-                    background: getSentimentColor('negative', 0.8).bg
-                  }}></div>
-                  <span className="fw-semibold text-danger small">
-                    <FaThumbsDown className="me-1" />Negative
-                  </span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <div className="me-2 rounded-circle" style={{
-                    width: '16px', 
-                    height: '16px', 
-                    background: getSentimentColor('neutral', 0.8).bg
-                  }}></div>
-                  <span className="fw-semibold text-warning small">
-                    <FaMinus className="me-1" />Neutral
-                  </span>
-                </div>
+                <span className="fw-semibold small me-3">{themes[currentTheme].name} Theme:</span>
+                {themes[currentTheme].colors.map((color, index) => (
+                  <div key={index} className="d-flex align-items-center">
+                    <div 
+                      className="me-2 rounded-circle"
+                      style={{ width: '16px', height: '16px', background: color }}
+                    />
+                    <span className="fw-semibold small" style={{ color: color }}>
+                      Color {index + 1}
+                    </span>
+                  </div>
+                ))}
               </>
             )}
           </div>
         </Card.Body>
       </Card>
 
-      <Row className="g-4">
-        <Col lg={4}>
-          <Card className={`h-100 shadow-sm border-0 rounded-3 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
-            <Card.Header className="bg-success text-white border-0 rounded-top-3">
-              <h6 className="mb-0 fw-bold">
-                <FaThumbsUp className="me-2" />
-                Top Positive Keywords
-              </h6>
-            </Card.Header>
-            <Card.Body className="p-3">
-              <div className="d-flex flex-wrap gap-2">
-                {wordCloudData
-                  .filter(word => word.dominantSentiment === 'positive')
-                  .slice(0, 12)
-                  .map((word, index) => (
-                    <Badge 
-                      key={word.text}
-                      bg="success" 
-                      className="cursor-pointer px-3 py-2 fw-semibold"
-                      style={{ 
-                        fontSize: '0.85rem',
-                        transition: 'all 0.2s ease',
-                        opacity: 0.9
-                      }}
-                      onClick={() => handleWordClick(word)}
-                      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                    >
-                      {word.text} ({word.positive})
-                    </Badge>
-                  ))}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
+      {/* Most Frequent Terms Card */}
+      <Card className={`shadow-sm border-0 rounded-3 mb-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
+        <Card.Header 
+          className="text-white border-0 rounded-top-3"
+          style={{ background: themes[currentTheme].gradient }}
+        >
+          <h6 className="mb-0 fw-bold">
+            <FaChartLine className="me-2" />
+            Most Frequent Terms
+          </h6>
+        </Card.Header>
+        <Card.Body className="p-3">
+          <div className="d-flex flex-wrap gap-2">
+            {wordCloudData.slice(0, 15).map((word, index) => {
+              const colorIndex = index % themes[currentTheme].colors.length;
+              const color = themes[currentTheme].colors[colorIndex];
+              
+              return (
+                <Badge 
+                  key={word.text}
+                  style={{ 
+                    backgroundColor: color,
+                    fontSize: '0.85rem',
+                    transition: 'all 0.2s ease',
+                    opacity: 0.9,
+                    cursor: 'pointer'
+                  }}
+                  className="px-3 py-2 fw-semibold text-white"
+                  onClick={() => handleWordClick(word)}
+                  onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
+                  onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+                >
+                  {word.text} ({word.value})
+                </Badge>
+              );
+            })}
+          </div>
+        </Card.Body>
+      </Card>
 
-        <Col lg={4}>
-          <Card className={`h-100 shadow-sm border-0 rounded-3 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
-            <Card.Header className="bg-danger text-white border-0 rounded-top-3">
-              <h6 className="mb-0 fw-bold">
-                <FaThumbsDown className="me-2" />
-                Top Negative Keywords
-              </h6>
-            </Card.Header>
-            <Card.Body className="p-3">
-              <div className="d-flex flex-wrap gap-2">
-                {wordCloudData
-                  .filter(word => word.dominantSentiment === 'negative')
-                  .slice(0, 12)
-                  .map((word, index) => (
-                    <Badge 
-                      key={word.text}
-                      bg="danger" 
-                      className="cursor-pointer px-3 py-2 fw-semibold"
-                      style={{ 
-                        fontSize: '0.85rem',
-                        transition: 'all 0.2s ease',
-                        opacity: 0.9
-                      }}
-                      onClick={() => handleWordClick(word)}
-                      onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                    >
-                      {word.text} ({word.negative})
-                    </Badge>
-                  ))}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-
-        <Col lg={4}>
-          <Card className={`h-100 shadow-sm border-0 rounded-3 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
-            <Card.Header className="bg-primary text-white border-0 rounded-top-3">
-              <h6 className="mb-0 fw-bold">
-                <FaChartLine className="me-2" />
-                Most Frequent Overall
-              </h6>
-            </Card.Header>
-            <Card.Body className="p-3">
-              <div className="d-flex flex-wrap gap-2">
-                {wordCloudData.slice(0, 12).map((word, index) => (
-                  <Badge 
-                    key={word.text}
-                    bg="primary" 
-                    className="cursor-pointer px-3 py-2 fw-semibold"
-                    style={{ 
-                      fontSize: '0.85rem',
-                      transition: 'all 0.2s ease',
-                      opacity: 0.9
-                    }}
-                    onClick={() => handleWordClick(word)}
-                    onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-                    onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-                  >
-                    {word.text} ({word.value})
-                  </Badge>
-                ))}
-              </div>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      <Card className={`shadow-sm border-0 rounded-3 mt-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
+      {/* Analytics Overview */}
+      <Card className={`shadow-sm border-0 rounded-3 mb-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
         <Card.Header className={`border-0 rounded-top-3 ${isDarkMode ? 'bg-secondary' : 'bg-light'}`}>
           <h6 className="mb-0 fw-bold">
             <FaInfoCircle className="me-2" />
@@ -744,40 +582,33 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
         </Card.Header>
         <Card.Body>
           <Row className="text-center g-4">
-            <Col md={3}>
+            <Col md={4}>
               <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-primary bg-opacity-20' : 'bg-primary bg-opacity-10'}`}>
                 <h3 className="text-primary mb-2 fw-bold">{wordCloudData.length}</h3>
                 <p className="text-muted mb-0 fw-semibold">Unique Keywords</p>
               </div>
             </Col>
-            <Col md={3}>
+            <Col md={4}>
               <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-success bg-opacity-20' : 'bg-success bg-opacity-10'}`}>
                 <h3 className="text-success mb-2 fw-bold">
-                  {wordCloudData.filter(w => w.dominantSentiment === 'positive').length}
+                  {wordCloudData.reduce((sum, word) => sum + word.value, 0)}
                 </h3>
-                <p className="text-muted mb-0 fw-semibold">Positive Terms</p>
+                <p className="text-muted mb-0 fw-semibold">Total Word Count</p>
               </div>
             </Col>
-            <Col md={3}>
-              <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-danger bg-opacity-20' : 'bg-danger bg-opacity-10'}`}>
-                <h3 className="text-danger mb-2 fw-bold">
-                  {wordCloudData.filter(w => w.dominantSentiment === 'negative').length}
-                </h3>
-                <p className="text-muted mb-0 fw-semibold">Negative Terms</p>
-              </div>
-            </Col>
-            <Col md={3}>
+            <Col md={4}>
               <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-warning bg-opacity-20' : 'bg-warning bg-opacity-10'}`}>
                 <h3 className="text-warning mb-2 fw-bold">
-                  {wordCloudData.filter(w => w.dominantSentiment === 'neutral').length}
+                  {maxValue}
                 </h3>
-                <p className="text-muted mb-0 fw-semibold">Neutral Terms</p>
+                <p className="text-muted mb-0 fw-semibold">Most Frequent</p>
               </div>
             </Col>
           </Row>
         </Card.Body>
       </Card>
 
+      {/* Instructions */}
       <Card className={`mt-4 border-0 rounded-3 ${isDarkMode ? 'bg-secondary' : 'bg-light'}`}>
         <Card.Body className="p-4 text-center">
           <div className="d-flex justify-content-center align-items-center gap-4 flex-wrap">
@@ -794,17 +625,18 @@ Positive: ${word.positive} | Negative: ${word.negative} | Neutral: ${word.neutra
               Size shows frequency
             </small>
             <small className="text-muted fw-semibold">
-              <FaFilter className="me-1 text-info" />
-              Use filters to explore
+              <FaPalette className="me-1 text-info" />
+              Toggle themes & modes
             </small>
             <small className="text-muted fw-semibold">
               <FaEye className="me-1 text-secondary" />
-              Toggle modes & views
+              Switch between theme/heatmap
             </small>
           </div>
         </Card.Body>
       </Card>
 
+      {/* Export Modal */}
       <Modal show={exportModalShow} onHide={() => setExportModalShow(false)} centered>
         <Modal.Header closeButton className={isDarkMode ? 'bg-dark text-light' : ''}>
           <Modal.Title>
