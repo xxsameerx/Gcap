@@ -3878,8 +3878,8 @@ body {
   box-shadow: 0 10px 25px rgba(255,255,255,0.1) !important;
 }
 
-/* dark theme for WordCloudComponent negative  */
-/* Dark Theme Word Cloud Fixes */
+/* dark theme for WordCloudComponent */
+
 [data-theme="dark"] .word-cloud-dashboard .badge.bg-danger {
   background-color: #ff6b6b !important;
   color: #ffffff !important;
@@ -3925,4 +3925,39 @@ body {
 
 [data-theme="dark"] .word-cloud-dashboard .card-header.bg-primary {
   background-color: #2563eb !important;
+}
+/* dark toggle wordcloud */
+
+[data-theme="dark"] {
+  --bg-primary: #1f2937;
+  --bg-secondary: #374151;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --border-color: #4b5563;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+}
+
+/* Apply theme colors globally */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Theme-specific navbar styles */
+.theme-dark .navbar {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
+}
+
+.theme-light .navbar {
+  background-color: var(--bg-primary) !important;
+  border-color: var(--border-color) !important;
 }

@@ -79,7 +79,7 @@ const FeatureCards = () => {
         <Row className="mb-5">
           <Col lg={10} className="mx-auto text-center">
             <div className="features-header">
-              <Badge className="section-badge mb-3">🇮🇳 {t('featuresSectionBadge')}</Badge>
+              <Badge className="section-badge mb-3">{t('featuresSectionBadge')}</Badge>
               <h2 className="features-main-title">
                 {t('featuresMainTitle')}
                 <span className="title-highlight"> {t('advancedTechnology') || 'Advanced Technology'}</span>

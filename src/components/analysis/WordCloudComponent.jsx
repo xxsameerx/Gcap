@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 import { Card, Row, Col, Badge, Button, Form, InputGroup, Dropdown, Modal, Alert, ButtonGroup } from 'react-bootstrap';
 import { 
   FaCloud, 
@@ -14,7 +14,8 @@ import {
   FaSun,
   FaFileImage,
   FaFileExport,
-  FaFilePdf
+  FaFilePdf,
+  FaExpand
 } from 'react-icons/fa';
 
 const WordCloudComponent = ({ 
@@ -31,6 +32,16 @@ const WordCloudComponent = ({
   const [currentTheme, setCurrentTheme] = useState('default');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [exportModalShow, setExportModalShow] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  // Fullscreen state detection
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', onFullscreenChange);
+  }, []);
 
   // Custom color themes with improved colors
   const themes = {
@@ -73,6 +84,20 @@ const WordCloudComponent = ({
     const nextIndex = (currentIndex + 1) % themeKeys.length;
     setCurrentTheme(themeKeys[nextIndex]);
   }, [currentTheme, themes]);
+
+  // Fullscreen toggle function
+  const toggleFullscreen = useCallback(() => {
+    const elem = document.querySelector('.word-cloud-container');
+    if (!elem) return;
+
+    if (!document.fullscreenElement) {
+      elem.requestFullscreen().catch((err) => {
+        console.error(`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  }, []);
 
   // Simplified word cloud data processing (no sentiment filtering)
   const wordCloudData = useMemo(() => {
@@ -279,9 +304,33 @@ const WordCloudComponent = ({
                   size="sm"
                   className="px-3"
                   onClick={toggleTheme}
+                  style={{ 
+                    color: isFullscreen || isDarkMode ? '#ffffff' : '#000000',
+                    backgroundColor: isFullscreen || isDarkMode ? 'rgba(255,255,255,0.1)' : '#ffffff',
+                    borderColor: isFullscreen || isDarkMode ? '#ffffff' : '#dee2e6',
+                    zIndex: 10000 
+                  }}
                 >
                   <FaPalette className="me-1" />
                   {themes[currentTheme].name}
+                </Button>
+
+                {/* Fullscreen Toggle Button */}
+                <Button
+                  variant="outline-light"
+                  size="sm"
+                  onClick={toggleFullscreen}
+                  className="px-3"
+                  title="Toggle Fullscreen"
+                  style={{ 
+                    color: isFullscreen || isDarkMode ? '#ffffff' : '#6c757d',
+                    borderColor: isFullscreen || isDarkMode ? '#ffffff' : '#6c757d',
+                    backgroundColor: isFullscreen || isDarkMode ? 'rgba(255,255,255,0.1)' : 'transparent',
+                    zIndex: 10000 
+                  }}
+                >
+                  <FaExpand className="me-1" />
+                  Fullscreen
                 </Button>
 
                 {/* Dark Mode Toggle */}
@@ -290,11 +339,26 @@ const WordCloudComponent = ({
                   size="sm"
                   onClick={() => setIsDarkMode(!isDarkMode)}
                   className="px-3"
+                  style={{ 
+                    color: isFullscreen || isDarkMode ? '#ffffff' : '#6c757d',
+                    borderColor: isFullscreen || isDarkMode ? '#ffffff' : '#6c757d',
+                    backgroundColor: isDarkMode ? '#ffc107' : (isFullscreen ? 'rgba(255,255,255,0.1)' : 'transparent'),
+                    zIndex: 10000 
+                  }}
                 >
                   {isDarkMode ? <FaSun /> : <FaMoon />}
                 </Button>
 
-                <Badge bg="light" text="dark" className="px-3 py-2 fw-semibold">
+                <Badge 
+                  bg="light" 
+                  text="dark" 
+                  className="px-3 py-2 fw-semibold"
+                  style={{
+                    color: isFullscreen || isDarkMode ? '#000000' : '#000000',
+                    backgroundColor: isFullscreen || isDarkMode ? '#ffffff' : '#f8f9fa',
+                    zIndex: 10000
+                  }}
+                >
                   <FaHashtag className="me-1" />
                   {wordCloudData.length} Keywords
                 </Badge>
@@ -305,6 +369,12 @@ const WordCloudComponent = ({
                     size="sm" 
                     className="px-3"
                     onClick={() => setExportModalShow(true)}
+                    style={{ 
+                      color: isFullscreen || isDarkMode ? '#000000' : '#000000',
+                      backgroundColor: isFullscreen || isDarkMode ? '#ffffff' : '#f8f9fa',
+                      borderColor: isFullscreen || isDarkMode ? '#ffffff' : '#dee2e6',
+                      zIndex: 10000 
+                    }}
                   >
                     <FaDownload className="me-1" />
                     Export
@@ -573,40 +643,50 @@ const WordCloudComponent = ({
       </Card>
 
       {/* Analytics Overview */}
-      <Card className={`shadow-sm border-0 rounded-3 mb-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
-        <Card.Header className={`border-0 rounded-top-3 ${isDarkMode ? 'bg-secondary' : 'bg-light'}`}>
-          <h6 className="mb-0 fw-bold">
-            <FaInfoCircle className="me-2" />
-            Analytics Overview
-          </h6>
-        </Card.Header>
-        <Card.Body>
-          <Row className="text-center g-4">
-            <Col md={4}>
-              <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-primary bg-opacity-20' : 'bg-primary bg-opacity-10'}`}>
-                <h3 className="text-primary mb-2 fw-bold">{wordCloudData.length}</h3>
-                <p className="text-muted mb-0 fw-semibold">Unique Keywords</p>
-              </div>
-            </Col>
-            <Col md={4}>
-              <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-success bg-opacity-20' : 'bg-success bg-opacity-10'}`}>
-                <h3 className="text-success mb-2 fw-bold">
-                  {wordCloudData.reduce((sum, word) => sum + word.value, 0)}
-                </h3>
-                <p className="text-muted mb-0 fw-semibold">Total Word Count</p>
-              </div>
-            </Col>
-            <Col md={4}>
-              <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-warning bg-opacity-20' : 'bg-warning bg-opacity-10'}`}>
-                <h3 className="text-warning mb-2 fw-bold">
-                  {maxValue}
-                </h3>
-                <p className="text-muted mb-0 fw-semibold">Most Frequent</p>
-              </div>
-            </Col>
-          </Row>
-        </Card.Body>
-      </Card>
+
+<Card className={`shadow-sm border-0 rounded-3 mb-4 ${isDarkMode ? 'bg-dark text-light' : ''}`}>
+  <Card.Header className={`border-0 rounded-top-3 ${isDarkMode ? 'bg-secondary text-light' : 'bg-light'}`}>
+    <h6 className={`mb-0 fw-bold ${isDarkMode ? 'text-light' : ''}`}>
+      <FaInfoCircle className="me-2" />
+      Analytics Overview
+    </h6>
+  </Card.Header>
+  <Card.Body>
+    <Row className="text-center g-4">
+      <Col md={4}>
+        <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-primary bg-opacity-20' : 'bg-primary bg-opacity-10'}`}>
+          <h3 className={`${isDarkMode ? 'text-light' : 'text-primary'} mb-2 fw-bold`}>
+            {wordCloudData.length}
+          </h3>
+          <p className={`${isDarkMode ? 'text-light' : 'text-muted'} mb-0 fw-semibold`}>
+            Unique Keywords
+          </p>
+        </div>
+      </Col>
+      <Col md={4}>
+        <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-success bg-opacity-20' : 'bg-success bg-opacity-10'}`}>
+          <h3 className={`${isDarkMode ? 'text-light' : 'text-success'} mb-2 fw-bold`}>
+            {wordCloudData.reduce((sum, word) => sum + word.value, 0)}
+          </h3>
+          <p className={`${isDarkMode ? 'text-light' : 'text-muted'} mb-0 fw-semibold`}>
+            Total Word Count
+          </p>
+        </div>
+      </Col>
+      <Col md={4}>
+        <div className={`p-3 rounded-3 ${isDarkMode ? 'bg-warning bg-opacity-20' : 'bg-warning bg-opacity-10'}`}>
+          <h3 className={`${isDarkMode ? 'text-light' : 'text-warning'} mb-2 fw-bold`}>
+            {maxValue}
+          </h3>
+          <p className={`${isDarkMode ? 'text-light' : 'text-muted'} mb-0 fw-semibold`}>
+            Most Frequent
+          </p>
+        </div>
+      </Col>
+    </Row>
+  </Card.Body>
+</Card>
+
 
       {/* Instructions */}
       <Card className={`mt-4 border-0 rounded-3 ${isDarkMode ? 'bg-secondary' : 'bg-light'}`}>
@@ -688,6 +768,16 @@ const WordCloudComponent = ({
         
         .word-cloud-item {
           will-change: transform;
+        }
+        
+        /* Fullscreen styles */
+        .word-cloud-container:fullscreen {
+          background: ${isDarkMode ? '#1f2937' : '#ffffff'} !important;
+        }
+        
+        /* Ensure buttons are visible in fullscreen */
+        .word-cloud-dashboard button {
+          position: relative;
         }
         
         @media (max-width: 768px) {

@@ -79,7 +79,7 @@ const translations = {
     
     // FeatureCards Section
     featuresSectionBadge: 'Digital India Innovation',
-    featuresMainTitle: 'Transforming Governance Through Advanced Technology',
+    featuresMainTitle: 'Transforming Governance Through ',
     featuresSubtitle: 'Empowering democratic institutions with cutting-edge AI solutions designed specifically for Indian governance challenges and citizen engagement at scale.',
     featuresFooterText: 'Built for India, By Indians - Designed with deep understanding of Indian governance structures, languages, and cultural nuances.',
     
